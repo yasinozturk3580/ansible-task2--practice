@@ -1,0 +1,36 @@
+- name: Install  Apache
+  apt:
+    name: apache2
+    state: latest    
+
+- name: Make sure a service  is running
+  systemd:
+    state: started
+    enabled: yes
+    name: apache2
+
+- name: Install wget (if not already)
+  apt:
+    name: wget
+    state: present
+
+- name: Download template using wget
+  shell: wget -O /tmp/bitcypo.zip "https://www.free-css.com/assets/files/free-css-templates/download/page285/bitcypo.zip"
+  args:
+    creates: /tmp/bitcypo.zip
+    
+- name: Install  unzip
+  apt:
+    name: unzip
+    state: latest
+
+- name: Extract a template
+  unarchive:
+    src: /tmp/bitcypo.zip
+    dest: /tmp/
+    remote_src: yes
+
+- name: Move templates files to  /var/www/html
+  shell: "mv  /tmp/bitcypo-html/*  /var/www/html/"
+  args:
+    creates: /var/www/html/contact.html
