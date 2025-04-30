@@ -1,4 +1,4 @@
-# ansible-task2--practice
+# ansible-task2-1 practice
 # Task- install static web site :
   - create 2 VMs, centos 7 and ubuntu 20.04
   - create playbooks which will automatically run below tasks based on centos or ubuntu
