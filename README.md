@@ -23,6 +23,8 @@
 
 
     # ansible-playbook -i hosts  main.yml
+    
+    # rm -rf ( file or folder name ) : delete it
 
 
 
