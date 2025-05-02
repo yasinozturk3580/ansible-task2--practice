@@ -1,0 +1,45 @@
+- hosts: all
+  become: yes
+  vars:
+    package_name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    service_name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+
+  tasks:
+    - name: Disable SELinux (RedHat only)
+      selinux:
+        state: disabled
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install Apache
+      package:
+        name: "{{ package_name }}"
+        state: latest
+
+    - name: Start and enable Apache
+      systemd:
+        name: "{{ service_name }}"
+        state: started
+        enabled: yes
+
+    - name: Download template without Ansible get_url
+      shell: |
+        curl -k -sSL -o /tmp/bitcypo.zip "https://www.free-css.com/assets/files/free-css-templates/download/page285/bitcypo.zip"
+      args:
+        creates: /tmp/bitcypo.zip
+
+
+    - name: Install unzip
+      package:
+        name: unzip
+        state: latest
+
+    - name: Extract the template
+      unarchive:
+        src: /tmp/bitcypo.zip
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Move template files to /var/www/html
+      shell: "mv /tmp/bitcypo-html/* /var/www/html/"
+      args:
+        creates: /var/www/html/contact.html
